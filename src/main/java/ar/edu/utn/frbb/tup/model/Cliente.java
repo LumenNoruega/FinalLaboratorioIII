@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.utils;
+package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -41,5 +41,6 @@ public class Cliente extends Persona{
 
     public void addCuenta(Cuenta cuenta) {
         this.cuentas.add(cuenta);
+        cuenta.setTitular(this);
     }
 }

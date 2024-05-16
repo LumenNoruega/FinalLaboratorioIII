@@ -1,7 +1,9 @@
-package ar.edu.utn.frbb.tup;
+package ar.edu.utn.frbb.tup.presentation.input;
 
-import ar.edu.utn.frbb.tup.utils.Cliente;
-import ar.edu.utn.frbb.tup.utils.TipoPersona;
+import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.TipoPersona;
+import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.service.ClienteService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,9 +11,9 @@ import java.util.List;
 
 public class ClienteInputProcessor extends BaseInputProcessor{
 
-    private static List<Cliente> clientes = new ArrayList<>();
+    ClienteService clienteService = new ClienteService();
 
-    public Cliente ingresarCliente() {
+    public void altaCliente() {
 
         // Ingreso de datos del Cliente
         Cliente cliente = new Cliente();
@@ -44,13 +46,21 @@ public class ClienteInputProcessor extends BaseInputProcessor{
             try {
                 fechaAlta = LocalDate.parse(scanner.nextLine());
                 fechaValida = true;
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.out.println("Formato de fecha inválido. Ingrese la fecha en formato YYYY-MM-DD:");
             }
         }
         cliente.setFechaAlta(fechaAlta);
 
+        try {
+            clienteService.darDeAltaCliente(cliente);
+        } catch (ClienteAlreadyExistsException e) {
+            System.out.println();
+            System.out.println();
+            System.out.println(e.getMessage());
+        }
+
         clearScreen();
-        return cliente;
+
     }
 }

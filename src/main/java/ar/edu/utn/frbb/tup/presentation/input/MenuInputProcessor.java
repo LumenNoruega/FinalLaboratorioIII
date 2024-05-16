@@ -1,8 +1,8 @@
-package ar.edu.utn.frbb.tup;
+package ar.edu.utn.frbb.tup.presentation.input;
 
-import ar.edu.utn.frbb.tup.utils.Cliente;
-
-import java.util.Scanner;
+import ar.edu.utn.frbb.tup.model.Banco;
+import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Cuenta;
 
 public class MenuInputProcessor extends BaseInputProcessor{
     ClienteInputProcessor clienteInputProcessor = new ClienteInputProcessor();
@@ -23,8 +23,7 @@ public class MenuInputProcessor extends BaseInputProcessor{
 
             switch (choice) {
                 case 1:
-                    Cliente c = clienteInputProcessor.ingresarCliente();
-                    banco.getClientes().add(c);
+                    clienteInputProcessor.altaCliente();
                     break;
 //            case 2:
 //                createAccount();

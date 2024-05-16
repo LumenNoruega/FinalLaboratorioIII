@@ -1,6 +1,4 @@
-package ar.edu.utn.frbb.tup;
-
-import ar.edu.utn.frbb.tup.utils.Cliente;
+package ar.edu.utn.frbb.tup.model;
 
 import java.util.ArrayList;
 import java.util.List;
