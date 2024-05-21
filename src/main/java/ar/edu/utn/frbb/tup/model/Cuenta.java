@@ -9,6 +9,7 @@ public class Cuenta {
     int balance;
     TipoCuenta tipoCuenta;
     Cliente titular;
+    String moneda;
 
     public Cliente getTitular() {
         return titular;
@@ -23,8 +24,9 @@ public class Cuenta {
         return tipoCuenta;
     }
 
-    public void setTipoCuenta(TipoCuenta tipoCuenta) {
+    public Cuenta setTipoCuenta(TipoCuenta tipoCuenta) {
         this.tipoCuenta = tipoCuenta;
+        return this;
     }
 
     public String getNombre() {
@@ -71,5 +73,14 @@ public class Cuenta {
 
     public long getNumeroCuenta() {
         return numeroCuenta;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public Cuenta setMoneda(String moneda) {
+        this.moneda = moneda;
+        return this;
     }
 }

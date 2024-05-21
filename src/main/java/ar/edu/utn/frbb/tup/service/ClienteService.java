@@ -1,7 +1,9 @@
 package ar.edu.utn.frbb.tup.service;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 
 public class ClienteService {
@@ -18,5 +20,12 @@ public class ClienteService {
         }
 
         clienteDao.save(cliente);
+    }
+
+    public void agregarCuenta(Cuenta cuenta, Cliente cliente) throws TipoCuentaAlreadyExistsException {
+        if (cliente.tieneCuenta(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+            throw new TipoCuentaAlreadyExistsException("El cliente ya posee una cuenta de ese tipo y moneda");
+        }
+        cliente.addCuenta(cuenta);
     }
 }

@@ -43,4 +43,14 @@ public class Cliente extends Persona{
         this.cuentas.add(cuenta);
         cuenta.setTitular(this);
     }
+
+    public boolean tieneCuenta(TipoCuenta tipoCuenta, String moneda) {
+        for (Cuenta cuenta:
+            cuentas) {
+            if (tipoCuenta.equals(cuenta.getTipoCuenta()) && moneda.equals(cuenta.getMoneda())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

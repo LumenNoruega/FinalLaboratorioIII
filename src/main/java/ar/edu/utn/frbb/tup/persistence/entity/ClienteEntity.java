@@ -20,7 +20,7 @@ public class ClienteEntity extends BaseEntity {
 
     public ClienteEntity(Cliente cliente) {
         super(cliente.getDni());
-        this.tipoPersona = cliente.getTipoPersona().getDescripcion();
+        this.tipoPersona = cliente.getTipoPersona() != null ? cliente.getTipoPersona().getDescripcion() : null;
         this.nombre = cliente.getNombre();
         this.apellido = cliente.getApellido();
         this.fechaAlta = cliente.getFechaAlta();
