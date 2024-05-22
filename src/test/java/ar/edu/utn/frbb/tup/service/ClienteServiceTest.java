@@ -76,7 +76,6 @@ class ClienteServiceTest {
         Cuenta cuenta = new Cuenta()
                 .setMoneda("ARS")
                 .setBalance(500000)
-                .setNombre("UnaCuenta")
                 .setTipoCuenta(TipoCuenta.CAJA_AHORRO);
 
         clienteService.agregarCuenta(cuenta, pepeRino);

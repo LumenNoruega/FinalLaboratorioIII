@@ -1,15 +1,21 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 public class Cuenta {
     private long numeroCuenta;
-    String nombre;
     LocalDateTime fechaCreacion;
     int balance;
     TipoCuenta tipoCuenta;
     Cliente titular;
     String moneda;
+
+    public Cuenta() {
+        this.numeroCuenta = new Random().nextLong();
+        this.balance = 0;
+        this.fechaCreacion = LocalDateTime.now();
+    }
 
     public Cliente getTitular() {
         return titular;
@@ -29,14 +35,6 @@ public class Cuenta {
         return this;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public Cuenta setNombre(String nombre) {
-        this.nombre = nombre;
-        return this;
-    }
 
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
