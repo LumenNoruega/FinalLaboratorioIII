@@ -9,7 +9,7 @@ public class Cuenta {
     int balance;
     TipoCuenta tipoCuenta;
     Cliente titular;
-    String moneda;
+    TipoMoneda moneda;
 
     public Cuenta() {
         this.numeroCuenta = new Random().nextLong();
@@ -32,6 +32,15 @@ public class Cuenta {
 
     public Cuenta setTipoCuenta(TipoCuenta tipoCuenta) {
         this.tipoCuenta = tipoCuenta;
+        return this;
+    }
+
+    public TipoMoneda getMoneda() {
+        return moneda;
+    }
+
+    public Cuenta setMoneda(TipoMoneda moneda) {
+        this.moneda = moneda;
         return this;
     }
 
@@ -65,6 +74,10 @@ public class Cuenta {
         this.balance = this.balance - cantidadADebitar;
     }
 
+    public void setNumeroCuenta(long numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
+    }
+
     public void forzaDebitoDeCuenta(int i) {
         this.balance = this.balance - i;
     }
@@ -73,12 +86,5 @@ public class Cuenta {
         return numeroCuenta;
     }
 
-    public String getMoneda() {
-        return moneda;
-    }
 
-    public Cuenta setMoneda(String moneda) {
-        this.moneda = moneda;
-        return this;
-    }
 }

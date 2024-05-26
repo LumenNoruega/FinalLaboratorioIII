@@ -1,7 +1,9 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Cliente extends Persona{
@@ -10,6 +12,15 @@ public class Cliente extends Persona{
     private String banco;
     private LocalDate fechaAlta;
     private Set<Cuenta> cuentas = new HashSet<>();
+    private List<Long> listaCuentas = new ArrayList<>();
+
+    public List<Long> getListaCuentas() {
+        return listaCuentas;
+    }
+
+    public void setListaCuentas(List<Long> listaCuentas) {
+        this.listaCuentas = listaCuentas;
+    }
 
     public TipoPersona getTipoPersona() {
         return tipoPersona;
@@ -44,13 +55,23 @@ public class Cliente extends Persona{
         cuenta.setTitular(this);
     }
 
-    public boolean tieneCuenta(TipoCuenta tipoCuenta, String moneda) {
+    public boolean tieneCuenta(TipoCuenta tipoCuenta, TipoMoneda moneda) {
         for (Cuenta cuenta:
-            cuentas) {
+                cuentas) {
             if (tipoCuenta.equals(cuenta.getTipoCuenta()) && moneda.equals(cuenta.getMoneda())) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "tipoPersona=" + tipoPersona +
+                ", banco='" + banco + '\'' +
+                ", fechaAlta=" + fechaAlta +
+                ", cuentas=" + cuentas +
+                '}';
     }
 }
