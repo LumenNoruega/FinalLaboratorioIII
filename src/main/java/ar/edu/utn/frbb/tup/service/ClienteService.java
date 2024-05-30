@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 public class ClienteService {
 
     CuentaDao cuentaDao = new CuentaDao();
-    @Autowired
+
     ClienteDao clienteDao;
+
+    public ClienteService(ClienteDao clienteDao) {
+        this.clienteDao = clienteDao;
+    }
 
     public void darDeAltaCliente(Cliente cliente) throws ClienteAlreadyExistsException {
 /*

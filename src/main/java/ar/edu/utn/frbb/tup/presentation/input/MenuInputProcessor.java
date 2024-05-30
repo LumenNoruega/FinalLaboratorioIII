@@ -11,14 +11,16 @@ import org.springframework.stereotype.Service;
 public class MenuInputProcessor extends BaseInputProcessor{
 
     ClienteInputProcessor clienteInputProcessor;
-    CuentaInputProcessor cuentaInputProcessor = new CuentaInputProcessor();
-    ShowInfoCliente showInfoCliente = new ShowInfoCliente();
+    CuentaInputProcessor cuentaInputProcessor;
+    ShowInfoCliente showInfoCliente;
     ShowInfoCuenta showInfoCuenta = new ShowInfoCuenta();
 
     boolean exit = false;
 
-    public MenuInputProcessor(ClienteInputProcessor clienteInputProcessor) {
+    public MenuInputProcessor(ClienteInputProcessor clienteInputProcessor, CuentaInputProcessor cuentaInputProcessor, ShowInfoCliente showInfoCliente) {
         this.clienteInputProcessor = clienteInputProcessor;
+        this.cuentaInputProcessor = cuentaInputProcessor;
+        this.showInfoCliente = showInfoCliente;
     }
 
     public void renderMenu() {
