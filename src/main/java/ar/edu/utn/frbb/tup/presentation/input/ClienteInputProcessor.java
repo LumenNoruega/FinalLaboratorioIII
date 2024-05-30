@@ -4,14 +4,18 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ClienteInputProcessor extends BaseInputProcessor{
 
-    ClienteService clienteService = new ClienteService();
+    @Autowired
+    ClienteService clienteService;
 
     public void altaCliente() {
 

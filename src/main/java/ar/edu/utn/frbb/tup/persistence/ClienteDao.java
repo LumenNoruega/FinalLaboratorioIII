@@ -2,7 +2,9 @@ package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.persistence.entity.ClienteEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ClienteDao extends AbstractBaseDao{
 
     public Cliente find(long dni) {

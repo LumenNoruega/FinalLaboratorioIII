@@ -5,10 +5,13 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ClienteService {
-
-    ClienteDao clienteDao = new ClienteDao();
+    @Autowired
+    ClienteDao clienteDao;
 
     public void darDeAltaCliente(Cliente cliente) throws ClienteAlreadyExistsException {
         if (clienteDao.find(cliente.getDni()) != null) {

@@ -3,12 +3,22 @@ package ar.edu.utn.frbb.tup.presentation.input;
 import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Component
 public class MenuInputProcessor extends BaseInputProcessor{
-    ClienteInputProcessor clienteInputProcessor = new ClienteInputProcessor();
+
+    ClienteInputProcessor clienteInputProcessor;
+
     boolean exit = false;
 
-    public void renderMenu(Banco banco) {
+    public MenuInputProcessor(ClienteInputProcessor clienteInputProcessor) {
+        this.clienteInputProcessor = clienteInputProcessor;
+    }
+
+    public void renderMenu() {
 
         while (!exit) {
             System.out.println("Bienveido a la aplicación de Banco!");
