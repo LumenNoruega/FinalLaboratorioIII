@@ -95,8 +95,6 @@ public class ClienteServiceTest {
     }
 
 
-    //Agregar una CA$ y agregar otra cuenta con mismo tipo y moneda --> fallar (assertThrows)
-
     @Test
     public void testAgregarCuentaAClienteDuplicada() throws TipoCuentaAlreadyExistsException {
         Cliente luciano = new Cliente();
