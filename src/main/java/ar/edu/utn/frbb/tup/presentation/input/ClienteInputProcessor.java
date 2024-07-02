@@ -60,13 +60,7 @@ public class ClienteInputProcessor extends BaseInputProcessor{
         }
         cliente.setFechaNacimiento(fechaNacimiento);
 
-        try {
-            clienteService.darDeAltaCliente(cliente);
-        } catch (ClienteAlreadyExistsException e) {
-            System.out.println();
-            System.out.println();
-            System.out.println(e.getMessage());
-        }
+
         clearScreen();
     }
 }
