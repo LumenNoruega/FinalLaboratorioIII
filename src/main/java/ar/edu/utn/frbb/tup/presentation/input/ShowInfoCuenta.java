@@ -3,20 +3,26 @@ package ar.edu.utn.frbb.tup.presentation.input;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.service.CuentaService;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ShowInfoCuenta {
 
-    private CuentaService cuentaService;
+    private final CuentaService cuentaService;
 
-    public ShowInfoCuenta() {
-        this.cuentaService = new CuentaService();
+   
+    public ShowInfoCuenta(CuentaService cuentaService) {
+        this.cuentaService = cuentaService;
     }
 
     public void mostrarInfoCuenta(long id) {
         Cuenta cuenta = cuentaService.find(id);
 
-        if(cuenta == null) {
+        if (cuenta == null) {
             System.out.println("Cuenta no encontrada!");
+            return;
         }
+
         System.out.println("Información de la Cuenta: ");
         System.out.println("Cuenta id: " + cuenta.getNumeroCuenta());
         System.out.println("Tipo de Cuenta: " + cuenta.getTipoCuenta());

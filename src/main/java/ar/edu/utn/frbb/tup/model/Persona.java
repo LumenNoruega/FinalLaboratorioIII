@@ -1,20 +1,31 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 public class Persona {
+    private long dni;
     private String nombre;
     private String apellido;
-    private long dni;
     private LocalDate fechaNacimiento;
 
+    // Constructor sin parámetros
     public Persona() {}
-    public Persona(long dni, String apellido, String nombre, String fechaNacimiento) {
+
+    // Constructor con parámetros
+    public Persona(long dni, String nombre, String apellido, LocalDate fechaNacimiento) {
         this.dni = dni;
-        this.apellido = apellido;
         this.nombre = nombre;
-        this.fechaNacimiento = LocalDate.parse(fechaNacimiento);
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // Getters y Setters
+    public long getDni() {
+        return dni;
+    }
+
+    public void setDni(long dni) {
+        this.dni = dni;
     }
 
     public String getNombre() {
@@ -33,26 +44,12 @@ public class Persona {
         this.apellido = apellido;
     }
 
-    public long getDni() {
-        return dni;
-    }
-
-    public void setDni(long dni) {
-        this.dni = dni;
-    }
-
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public int getEdad() {
-        LocalDate currentDate = LocalDate.now();
-        Period agePeriod = Period.between(fechaNacimiento, currentDate);
-        return agePeriod.getYears();
     }
 }
 

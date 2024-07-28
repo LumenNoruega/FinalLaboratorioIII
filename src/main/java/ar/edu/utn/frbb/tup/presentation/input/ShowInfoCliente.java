@@ -3,15 +3,15 @@ package ar.edu.utn.frbb.tup.presentation.input;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.service.ClienteService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+
 
 @Component
 public class ShowInfoCliente {
+    @Autowired
     private ClienteService clienteService;
 
     public ShowInfoCliente(ClienteService clienteService) {

@@ -1,32 +1,33 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
-import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
-import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.service.ClienteService;
 import ar.edu.utn.frbb.tup.service.CuentaService;
+
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
 @Component
-public class CuentaInputProcessor extends BaseInputProcessor{
-    ClienteService clienteService;
-    CuentaService cuentaService = new CuentaService();
-    CuentaDao cuentaDao = new CuentaDao();
-    Scanner scanner = new Scanner(System.in);
+public class CuentaInputProcessor extends BaseInputProcessor {
 
-    public CuentaInputProcessor(ClienteService clienteService) {
+    private final ClienteService clienteService;
+    private final CuentaService cuentaService;
+    private final Scanner scanner = new Scanner(System.in);
+
+   
+    public CuentaInputProcessor(ClienteService clienteService, CuentaService cuentaService) {
         this.clienteService = clienteService;
+        this.cuentaService = cuentaService;
     }
 
-    public void altaCuenta() {
+    public void altaCuenta() throws ClienteAlreadyExistsException {
         Cuenta cuenta = new Cuenta();
         clearScreen();
 
@@ -37,7 +38,6 @@ public class CuentaInputProcessor extends BaseInputProcessor{
             tipoCuentaStr = scanner.nextLine().toUpperCase();
         }
 
-        // if (condicion) ? resultado1 : resultado2
         TipoCuenta tipoCuenta = tipoCuentaStr.equals("C") ? TipoCuenta.CUENTA_CORRIENTE : TipoCuenta.CAJA_AHORRO;
         cuenta.setTipoCuenta(tipoCuenta);
 
@@ -61,7 +61,7 @@ public class CuentaInputProcessor extends BaseInputProcessor{
         try {
             cuentaService.darDeAltaCuenta(cuenta, dniTitular);
             System.out.println("Cuenta creada con éxito");
-        } catch (TipoCuentaAlreadyExistsException e){
+        } catch (TipoCuentaAlreadyExistsException e) {
             System.out.println("Error: " + e.getMessage());
             return;
         } catch (CuentaAlreadyExistsException e) {

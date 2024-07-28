@@ -3,41 +3,36 @@ package ar.edu.utn.frbb.tup.persistence.entity;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
-import ar.edu.utn.frbb.tup.persistence.ClienteDao;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.service.ClienteService;
 
 import java.time.LocalDateTime;
 
-public class CuentaEntity extends BaseEntity{
-    String nombre;
-    LocalDateTime fechaCreacion;
-    int balance;
-    String tipoCuenta;
-    Long titular;
-    long numeroCuenta;
+public class CuentaEntity {
+    private long numeroCuenta;
+    private LocalDateTime fechaCreacion;
+    private double balance;
+    private TipoCuenta tipoCuenta;
+    private TipoMoneda moneda;
+    private Cliente titular;
 
+    // Constructor para convertir Cuenta a CuentaEntity
     public CuentaEntity(Cuenta cuenta) {
-        super(cuenta.getNumeroCuenta());
-        this.balance = cuenta.getBalance();
-        this.tipoCuenta = cuenta.getTipoCuenta().toString();
-        this.titular = cuenta.getTitular().getDni();
+        this.numeroCuenta = cuenta.getNumeroCuenta();
         this.fechaCreacion = cuenta.getFechaCreacion();
+        this.balance = cuenta.getBalance();
+        this.tipoCuenta = cuenta.getTipoCuenta();
+        this.moneda = cuenta.getMoneda();
+        this.titular = cuenta.getTitular();
     }
 
-    public Cuenta toCuenta() {
-        Cuenta cuenta = new Cuenta();
-        cuenta.setBalance(this.balance);
-        cuenta.setNumeroCuenta(this.numeroCuenta);
-        cuenta.setTipoCuenta(TipoCuenta.valueOf(this.tipoCuenta));
-        cuenta.setFechaCreacion(this.fechaCreacion);
-        return cuenta;
+    // Getters y Setters
+    public long getNumeroCuenta() {
+        return numeroCuenta;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNumeroCuenta(long numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
     }
 
     public LocalDateTime getFechaCreacion() {
@@ -48,35 +43,47 @@ public class CuentaEntity extends BaseEntity{
         this.fechaCreacion = fechaCreacion;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public String getTipoCuenta() {
+    public TipoCuenta getTipoCuenta() {
         return tipoCuenta;
     }
 
-    public void setTipoCuenta(String tipoCuenta) {
+    public void setTipoCuenta(TipoCuenta tipoCuenta) {
         this.tipoCuenta = tipoCuenta;
     }
 
-    public Long getTitular() {
+    public TipoMoneda getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(TipoMoneda moneda) {
+        this.moneda = moneda;
+    }
+
+    public Cliente getTitular() {
         return titular;
     }
 
-    public void setTitular(Long titular) {
+    public void setTitular(Cliente titular) {
         this.titular = titular;
     }
 
-    public long getNumeroCuenta() {
-        return numeroCuenta;
-    }
-
-    public void setNumeroCuenta(long numeroCuenta) {
-        this.numeroCuenta = numeroCuenta;
+    // Método para convertir CuentaEntity a Cuenta
+    public Cuenta toCuenta(ClienteService clienteService) {
+        Cuenta cuenta = new Cuenta();
+        cuenta.setNumeroCuenta(this.numeroCuenta);
+        cuenta.setFechaCreacion(this.fechaCreacion);
+        cuenta.setBalance(this.balance);
+        cuenta.setTipoCuenta(this.tipoCuenta);
+        cuenta.setMoneda(this.moneda);
+        cuenta.setTitular(this.titular);
+        return cuenta;
     }
 }
