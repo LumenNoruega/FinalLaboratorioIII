@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.service;
 
+import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
@@ -19,6 +20,9 @@ public class ClienteService {
     @Lazy
     private ClienteDao clienteDao;
 
+    @Autowired
+    private ClienteValidator clienteValidator;
+
     public ClienteService(ClienteDao clienteDao) {
         this.clienteDao = clienteDao;
     }
@@ -32,31 +36,10 @@ public class ClienteService {
             throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
         }
 
-        // Verifica que el DNI tenga 8 dígitos
-        String dniString = String.valueOf(cliente.getDni());
-        if (dniString.length() != 8) {
-            throw new IllegalArgumentException("El DNI debe tener 8 números");
-        }
-
-        // Verifica que la fecha de nacimiento no sea nula
-        if (cliente.getFechaNacimiento() == null) {
-            throw new IllegalArgumentException("La fecha de nacimiento no puede ser nula");
-        }
 
         // Verifica que el cliente sea mayor de 18 años
         if (cliente.getEdad() < 18) {
             throw new IllegalArgumentException("El cliente debe ser mayor a 18 años");
-        }
-
-        // Verifica que el nombre, apellido y banco contengan solo letras y caracteres especiales comunes en nombres
-        if (cliente.getNombre() == null || !cliente.getNombre().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+")) {
-            throw new IllegalArgumentException("El nombre debe contener solo letras");
-        }
-        if (cliente.getApellido() == null || !cliente.getApellido().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+")) {
-            throw new IllegalArgumentException("El apellido debe contener solo letras");
-        }
-        if (cliente.getBanco() == null || !cliente.getBanco().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+")) {
-            throw new IllegalArgumentException("El banco debe contener solo letras");
         }
 
         // Verifica que el tipo de persona sea válido

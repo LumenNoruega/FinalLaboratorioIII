@@ -1,56 +1,64 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.InvalidTipoPersonaException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class ClienteControllerTest {
+@WebMvcTest(ClienteController.class)
+public class ClienteControllerTest {
 
-    private MockMvc mockMvc;// Objeto para simular las peticiones HTTP
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private ClienteService clienteService;
 
-    @InjectMocks
-    private ClienteController clienteController;
+    @MockBean
+    private ClienteValidator clienteValidator;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private ClienteDto clienteDto;
+    private Cliente cliente;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
-    }
 
-    // Prueba para el método crearCliente cuando la creación es exitosa
-    @Test
-    void testCrearCliente_Exitoso() throws Exception {
-        // Crea un ClienteDto con datos de prueba
-        ClienteDto clienteDto = new ClienteDto();
-        clienteDto.setDni(12345678L);
+        clienteDto = new ClienteDto();
+        clienteDto.setDni(12345678);
         clienteDto.setNombre("Juan");
         clienteDto.setApellido("Pérez");
-        clienteDto.setFechaNacimiento(LocalDate.of(1985, 5, 15));
+        clienteDto.setFechaNacimiento(LocalDate.of(1980, 1, 1));
         clienteDto.setTipoPersona("fisica");
-        clienteDto.setBanco("Banco Nación");
+        clienteDto.setBanco("BancoNacional");
 
-        // Crea un objeto Cliente con los mismos datos
-        Cliente cliente = new Cliente();
+        cliente = new Cliente();
         cliente.setDni(clienteDto.getDni());
         cliente.setNombre(clienteDto.getNombre());
         cliente.setApellido(clienteDto.getApellido());
@@ -58,86 +66,83 @@ class ClienteControllerTest {
         cliente.setTipoPersona(clienteDto.getTipoPersona());
         cliente.setBanco(clienteDto.getBanco());
         cliente.setFechaAlta(LocalDate.now());
-        // Configura el mock para que cuando se llame a darDeAltaCliente, devuelva el objeto Cliente
+    }
+
+    @Test
+    void testCrearCliente() throws Exception {
         when(clienteService.darDeAltaCliente(any(Cliente.class))).thenReturn(cliente);
 
         mockMvc.perform(post("/cliente")
-                        .contentType("application/json")
-                        .content("{ \"dni\": 12345678, \"nombre\": \"Juan\", \"apellido\": \"Pérez\", \"fechaNacimiento\": \"1985-05-15\", \"tipoPersona\": \"fisica\", \"banco\": \"Banco Nación\" }"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clienteDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dni", is(12345678)))
                 .andExpect(jsonPath("$.nombre", is("Juan")))
                 .andExpect(jsonPath("$.apellido", is("Pérez")))
                 .andExpect(jsonPath("$.tipoPersona", is("fisica")))
-                .andExpect(jsonPath("$.banco", is("Banco Nación")));
+                .andExpect(jsonPath("$.banco", is("BancoNacional")));
     }
 
-    // Prueba para el método crearCliente cuando el tipo de persona es inválido
     @Test
-    void testCrearCliente_TipoPersonaInvalido() throws Exception {
+    void testCrearClienteAlreadyExists() throws Exception {
+        doThrow(new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + clienteDto.getDni()))
+                .when(clienteService).darDeAltaCliente(any(Cliente.class));
+
         mockMvc.perform(post("/cliente")
-                        .contentType("application/json")
-                        .content("{ \"dni\": 12345678, \"nombre\": \"Juan\", \"apellido\": \"Pérez\", \"fechaNacimiento\": \"1985-05-15\", \"tipoPersona\": \"invalid\", \"banco\": \"Banco Nación\" }"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode", is(1002)))
-                .andExpect(jsonPath("$.errorMessage", is("El tipo de persona debe ser 'fisica' o 'juridica'")));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clienteDto)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode", is(1001)))
+                .andExpect(jsonPath("$.errorMessage", is("Ya existe un cliente con DNI " + clienteDto.getDni())));
     }
 
-    // Prueba para el método obtenerClientePorDni cuando la búsqueda es exitosa
     @Test
-    void testObtenerClientePorDni_Exitoso() throws Exception {
-        Cliente cliente = new Cliente();
-        cliente.setDni(12345678L);
-        cliente.setNombre("Juan");
-        cliente.setApellido("Pérez");
-
-        when(clienteService.buscarClientePorDni(anyLong())).thenReturn(cliente);
+    void testObtenerClientePorDni() throws Exception {
+        when(clienteService.buscarClientePorDni(12345678)).thenReturn(cliente);
 
         mockMvc.perform(get("/cliente/12345678"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dni", is(12345678)))
                 .andExpect(jsonPath("$.nombre", is("Juan")))
-                .andExpect(jsonPath("$.apellido", is("Pérez")));
+                .andExpect(jsonPath("$.apellido", is("Pérez")))
+                .andExpect(jsonPath("$.tipoPersona", is("fisica")))
+                .andExpect(jsonPath("$.banco", is("BancoNacional")));
     }
 
-    // Prueba para el método obtenerClientePorDni cuando el cliente no es encontrado
     @Test
-    void testObtenerClientePorDni_NoEncontrado() throws Exception {
-        when(clienteService.buscarClientePorDni(anyLong())).thenReturn(null);
+    void testObtenerClientePorDniNotFound() throws Exception {
+        when(clienteService.buscarClientePorDni(12345678)).thenReturn(null);
 
         mockMvc.perform(get("/cliente/12345678"))
                 .andExpect(status().isNotFound());
     }
 
-    // Prueba para el método obtenerTodosClientes cuando hay clientes en el sistema
     @Test
     void testObtenerTodosClientes() throws Exception {
-        Cliente cliente = new Cliente();
-        cliente.setDni(12345678L);
-        cliente.setNombre("Juan");
-        cliente.setApellido("Pérez");
+        List<Cliente> clientes = Arrays.asList(cliente);
+        when(clienteService.obtenerTodosClientes()).thenReturn(clientes);
 
-        when(clienteService.obtenerTodosClientes()).thenReturn(Collections.singletonList(cliente));
-        // Simula una petición GET a /cliente y verifica la respuesta
         mockMvc.perform(get("/cliente"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].dni", is(12345678)))
                 .andExpect(jsonPath("$[0].nombre", is("Juan")))
-                .andExpect(jsonPath("$[0].apellido", is("Pérez")));
+                .andExpect(jsonPath("$[0].apellido", is("Pérez")))
+                .andExpect(jsonPath("$[0].tipoPersona", is("fisica")))
+                .andExpect(jsonPath("$[0].banco", is("BancoNacional")));
     }
 
-    // Prueba para el manejo de la excepción ClienteAlreadyExistsException
     @Test
-    void testHandleClienteAlreadyExistsException() throws Exception {
-        // Configura el mock para que cuando se llame a darDeAltaCliente, lance una ClienteAlreadyExistsException
-        when(clienteService.darDeAltaCliente(any(Cliente.class)))
-                .thenThrow(new ClienteAlreadyExistsException("Cliente ya existe"));
+    void testInvalidTipoPersonaException() throws Exception {
+        clienteDto.setTipoPersona("invalido");
+
+        doThrow(new InvalidTipoPersonaException("El tipo de persona debe ser 'fisica' o 'juridica'"))
+                .when(clienteValidator).validate(any(ClienteDto.class));
 
         mockMvc.perform(post("/cliente")
-                        .contentType("application/json")
-                        .content("{ \"dni\": 12345678, \"nombre\": \"Juan\", \"apellido\": \"Pérez\", \"fechaNacimiento\": \"1985-05-15\", \"tipoPersona\": \"fisica\", \"banco\": \"Banco Nación\" }"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errorCode", is(1001)))
-                .andExpect(jsonPath("$.errorMessage", is("Cliente ya existe")));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clienteDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode", is(1002)))
+                .andExpect(jsonPath("$.errorMessage", is("El tipo de persona debe ser 'fisica' o 'juridica'")));
     }
 }

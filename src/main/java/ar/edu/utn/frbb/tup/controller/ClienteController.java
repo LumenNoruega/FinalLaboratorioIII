@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.InvalidTipoPersonaException;
@@ -23,15 +24,16 @@ public class ClienteController {
     @Lazy
     private ClienteService clienteService;
 
+    @Autowired
+    private ClienteValidator clienteValidator;
+
     // En este POST se crea un nuevo cliente. Primero, verifica si el tipo de persona es válido ('fisica' o 'juridica').
     // Luego, convierte la información del cliente desde el DTO a un objeto Cliente y lo guarda en el servicio.
     @PostMapping
     public Cliente crearCliente(@RequestBody ClienteDto clienteDto) throws ClienteAlreadyExistsException, InvalidTipoPersonaException {
+        // Validar ClienteDto
+        clienteValidator.validate(clienteDto);
 
-        if (!clienteDto.getTipoPersona().equalsIgnoreCase("fisica") &&
-                !clienteDto.getTipoPersona().equalsIgnoreCase("juridica")) {
-            throw new InvalidTipoPersonaException("El tipo de persona debe ser 'fisica' o 'juridica'");
-        }
         // Convertir ClienteDto a Cliente
         Cliente cliente = new Cliente();
         cliente.setDni(clienteDto.getDni());
