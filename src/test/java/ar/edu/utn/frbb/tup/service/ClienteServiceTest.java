@@ -42,18 +42,24 @@ public class ClienteServiceTest {
     }
 
     @Test
-    public void testClienteSuccess() throws ClienteAlreadyExistsException, InvalidTipoPersonaException {
+    public void testClienteSuccess() {
         Cliente cliente = new Cliente();
         cliente.setFechaNacimiento(LocalDate.of(1978, 3, 25));
         cliente.setDni(29857643);
         cliente.setNombre("Juan");
-        cliente.setTipoPersona("fisica");
+        cliente.setApellido("Pérez");
+        cliente.setTipoPersona(TipoPersona.FISICA.toString());
+        cliente.setBanco("Banco");
 
-        when(clienteDao.find(cliente.getDni(), false)).thenReturn(null);
+        when(clienteDao.find(29857643, false)).thenReturn(null);
 
-        clienteService.darDeAltaCliente(cliente);
+        try {
+            clienteService.darDeAltaCliente(cliente);
+        } catch (ClienteAlreadyExistsException e) {
+            fail("No se esperaba ClienteAlreadyExistsException");
+        }
 
-        verify(clienteDao, times(1)).save(any(Cliente.class));
+        verify(clienteDao, times(1)).save(cliente);
     }
 
     @Test
